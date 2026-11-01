@@ -189,7 +189,7 @@ export function offerVideo(file) {
     <button class="btn" data-ba="close">Close</button></div>`;
   el.querySelector('video').src = url;
   const save = el.querySelector('[data-ba="save"]'); save.href = url; save.download = file.name;
-  const close = () => { el.remove(); URL.revokeObjectURL(url); document.removeEventListener('keydown', onKey); };
+  const close = () => { el.remove(); URL.revokeObjectURL(url); document.removeEventListener('keydown', onKey); window.removeEventListener('hashchange', close); };
   const onKey = (e) => { if (e.key === 'Escape') close(); };
   el.addEventListener('click', (e) => {
     const k = e.target.closest('[data-ba]')?.dataset.ba;
@@ -201,6 +201,7 @@ export function offerVideo(file) {
     }
   });
   document.addEventListener('keydown', onKey);
+  window.addEventListener('hashchange', close); // leaving the screen closes the sheet
   document.body.appendChild(el);
   el.querySelector('[data-ba="share"], [data-ba="save"]').focus();
 }

@@ -6,6 +6,7 @@ import * as BK from './backup.js';
 import * as CAM from './camera.js';
 import { reminderSection, downloadReminderICS } from './reminders.js';
 import { makeBeforeAfter, offerVideo } from './compare.js';
+import * as TRY from './tryout.js';
 
 const S = $.st();
 const view = document.getElementById('view');
@@ -60,6 +61,7 @@ function home() {
     .filter((a, i, l) => l.indexOf(a) === i).slice(0, 3);
   return `<div class="page">
   <header class="stack-6"><p class="eyebrow">Your yoga studio</p><h1 class="title">What are you planning today?</h1></header>
+  ${TRY.homeCard(S)}
   <a class="streak" href="#/create"><span class="streak-ic">${ICON.flame}</span><span class="grow"><b>${$.streak() ? `${$.streak()}-day streak` : 'Start your streak today'} · ${L.name}</b><small>Today: ${esc(p.text)}</small></span><span class="gold">${$.points()} pts</span></a>
   <a class="search" href="#/library">${ICON.search}<span>Search by body part or pose</span></a>
   <section class="stack"><h2>Therapy tracks</h2><div class="grid2">
@@ -469,7 +471,7 @@ const ACT = {
     const btn = document.querySelector(`[data-act="beforeafter:${id}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Making your video…'; }
     toast('Making your video…');
     return makeBeforeAfter(blob(prog[0]), blob(prog.at(-1)), { firstLabel: day(prog[0]), lastLabel: day(prog.at(-1)), title: a ? `${a.sa} · ${a.en}` : '' })
-      .then((v) => offerVideo(new File([v], `${id}-before-after.${v.type.includes('mp4') ? 'mp4' : 'webm'}`, { type: v.type })), (err) => toast(err.message))
+      .then((v) => { TRY.mark('beforeafter'); return offerVideo(new File([v], `${id}-before-after.${v.type.includes('mp4') ? 'mp4' : 'webm'}`, { type: v.type })); }, (err) => toast(err.message))
       .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Make before/after video'; } });
   },
   async flowvid(fid) {
@@ -479,10 +481,11 @@ const ACT = {
   async camgo() {
     const v = document.getElementById('cam'); const btn = document.getElementById('cam-go');
     const { target, id, ret, photo } = CAMSTATE; if (!v || btn.dataset.busy) return;
-    if (photo) { const b = await CAM.snap(v); CAM.stop(); await SAVE[saverOf(target)](id, b, target.slice(5)); location.replace(ret); return; }
+    const tried = () => { TRY.mark('camera'); if (ret.startsWith('#/record')) TRY.mark('recday'); };
+    if (photo) { const b = await CAM.snap(v); CAM.stop(); await SAVE[saverOf(target)](id, b, target.slice(5)); tried(); location.replace(ret); return; }
     if (CAM.recording()) {
       btn.dataset.busy = '1'; const blob = await CAM.finish(); CAM.stop();
-      if (blob && blob.size) await SAVE[saverOf(target)](id, blob, target.slice(5));
+      if (blob && blob.size) { await SAVE[saverOf(target)](id, blob, target.slice(5)); tried(); }
       location.replace(ret); return;
     }
     btn.dataset.busy = '1'; await CAM.count(document.getElementById('cam-count')); delete btn.dataset.busy;
@@ -493,10 +496,12 @@ const ACT = {
   camoutline() { document.getElementById('cam-ghost')?.classList.toggle('off'); },
   async camupload() {
     const { target, id, ret, photo } = CAMSTATE; const f = await pick(photo ? 'image/*' : 'video/*,image/*'); if (!f) return;
-    CAM.stop(); await SAVE[saverOf(target)](id, f, target.slice(5)); location.replace(ret);
+    CAM.stop(); await SAVE[saverOf(target)](id, f, target.slice(5)); if (ret.startsWith('#/record')) TRY.mark('recday'); location.replace(ret);
   },
   prompt() { pts($.donePrompt(), 'Prompt done '); render(); },
-  async reminder() { const r = await downloadReminderICS(document.getElementById('reminder-time')?.value); if (r !== 'cancelled') toast(r === 'shared' ? 'Reminder ready' : 'Calendar file downloaded'); },
+  async reminder() { const r = await downloadReminderICS(document.getElementById('reminder-time')?.value); if (r !== 'cancelled') { TRY.mark('reminder'); toast(r === 'shared' ? 'Reminder ready' : 'Calendar file downloaded'); } },
+  tick(k) { TRY.toggle(k); render(); },
+  openfb() { document.querySelector('.fb-btn')?.click(); },
   async backup() {
     toast('Making your backup…');
     const f = await BK.makeBackup();
@@ -531,6 +536,7 @@ const ACT = {
   pp() {
     if (P.done) { P.done = false; P.i = 0; P.round = 1; P.left = secsOf(P.steps[0]); }
     P.playing = !P.playing; drawPlayer(P.playing);
+    if (P.playing) TRY.mark(P.kind === 'flow' ? 'flow' : 'seq');
   },
   pstep(d) { if (!P.done) step(+d, false); },
   voice() { P.voice = !P.voice; S.ui.voice = P.voice; $.save(); if (!P.voice) speechSynthesis?.cancel(); drawPlayer(); },
@@ -551,8 +557,8 @@ function backupView() {
   after = async () => { const st = await BK.stats(); if (document.body.dataset.screen === 'backup') view.innerHTML = BK.screen(st); };
   return BK.screen({ files: '…', bytes: 0, last: S.ui.lastBackup });
 }
-const ROUTES = { home, library, part, asana: asanaView, edit, seq, flow, play, create, record, badges, mother, backup: backupView, camera: cameraView };
-const TAB_OF = { home: 'home', library: 'library', part: 'library', asana: 'library', edit: 'library', seq: 'practice', flow: 'practice', play: 'practice', create: 'create', record: 'create', badges: 'create', backup: 'create', camera: 'create', mother: 'mother' };
+const ROUTES = { home, library, part, asana: asanaView, edit, seq, flow, play, create, record, badges, mother, backup: backupView, camera: cameraView, tryout: () => TRY.screen(S) };
+const TAB_OF = { home: 'home', library: 'library', part: 'library', asana: 'library', edit: 'library', seq: 'practice', flow: 'practice', play: 'practice', create: 'create', record: 'create', badges: 'create', backup: 'create', camera: 'create', tryout: 'home', mother: 'mother' };
 let after = null;
 async function hydrate() {
   for (const el of view.querySelectorAll('[data-media]')) {
@@ -572,6 +578,7 @@ function draw() {
   const q = Object.fromEntries(new URLSearchParams(qs || ''));
   view.innerHTML = ROUTES[name](parts.slice(1), q);
   document.body.dataset.screen = name; tabs(TAB_OF[name]);
+  if (name === 'part') TRY.mark('library'); else if (name === 'mother' || name === 'badges') TRY.mark(name);
   hydrate(); after?.();
 }
 // Actions redraw in place without jumping to the top; navigation starts at the top.
