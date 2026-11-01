@@ -1,7 +1,7 @@
 // Offline support: always try the network first so updates show up straight away,
 // and fall back to the last saved copy when offline.
 const CACHE = 'yogaflow-v3';
-const SHELL = ['./', './index.html', './styles.css', './js/app.js', './js/data.js', './js/figures.js', './js/store.js', './js/feedback.js', './js/backup.js', './js/camera.js', './js/vendor/fflate.js', './manifest.webmanifest', './icons/icon-192.png'];
+const SHELL = ['./', './index.html', './styles.css', './js/app.js', './js/data.js', './js/figures.js', './js/store.js', './js/feedback.js', './js/backup.js', './js/camera.js', './js/vendor/fflate.js', './js/compare.js', './manifest.webmanifest', './icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
