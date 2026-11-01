@@ -4,6 +4,7 @@ import * as $ from './store.js';
 import './feedback.js';
 import * as BK from './backup.js';
 import * as CAM from './camera.js';
+import { reminderSection, downloadReminderICS } from './reminders.js';
 import { makeBeforeAfter, offerVideo } from './compare.js';
 
 const S = $.st();
@@ -309,6 +310,7 @@ function create(_, q) {
   <section class="stack"><h2>Next 3 posts</h2>${ideas.map((x, i) => `<div class="card stack-6"><div class="row-between small"><b class="blue-t">${x.type}</b><span class="muted">${x.src}</span></div><b class="hook">“${esc(x.hook)}”</b>
     <div class="row-gap"><a class="small link" href="#/asana/${x.a.id}">${esc(x.a.sa)}</a><span class="grow"></span><button class="btn sm" data-act="copy:${i}">Copy caption</button><button class="btn sm" data-act="post:${x.a.id}">Mark posted</button></div></div>`).join('')}</section>
   <a class="card row-gap" href="#/badges"><span class="badges-mini">${$.badges().slice(0, 4).map((b) => `<i class="${b.earned ? 'on' : ''}"></i>`).join('')}</span><b class="grow">${earned} badge${earned === 1 ? '' : 's'} earned</b><span class="link small">See all</span></a>
+  ${reminderSection()}
   <a class="card row-gap" href="#/backup"><span class="grow"><b>Backup</b><small>Photos and videos are saved on this phone only. Last backup: ${S.ui.lastBackup ? new Date(S.ui.lastBackup).toLocaleDateString() : 'never'}</small></span><span class="link small">Back up</span></a>
   </div>`;
 }
@@ -494,6 +496,7 @@ const ACT = {
     CAM.stop(); await SAVE[saverOf(target)](id, f, target.slice(5)); location.replace(ret);
   },
   prompt() { pts($.donePrompt(), 'Prompt done '); render(); },
+  async reminder() { const r = await downloadReminderICS(document.getElementById('reminder-time')?.value); if (r !== 'cancelled') toast(r === 'shared' ? 'Reminder ready' : 'Calendar file downloaded'); },
   async backup() {
     toast('Making your backup…');
     const f = await BK.makeBackup();
