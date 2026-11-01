@@ -39,6 +39,24 @@ export async function mediaURL(k) {
   urls.set(k, u); return u;
 }
 function dropURL(k) { const u = urls.get(k); if (u) { URL.revokeObjectURL(u.url); urls.delete(k); } }
+export function allMedia() {
+  return db().then((d) => new Promise((res, rej) => {
+    const out = []; const t = d.transaction('media', 'readonly'); const req = t.objectStore('media').openCursor();
+    req.onsuccess = () => { const c = req.result; if (c) { out.push({ key: c.key, ...c.value }); c.continue(); } };
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error);
+  }));
+}
+// Merge a backup into this device: objects merge (backup wins on the same key), lists are combined.
+export function mergeState(b) {
+  for (const [k, v] of Object.entries(b || {})) {
+    if (k === 'log') { const have = new Set(S.log.map((l) => l.k)); S.log.push(...v.filter((l) => !have.has(l.k))); }
+    else if (k === 'days') S.days = [...new Set([...S.days, ...v])].sort();
+    else if (k === 'custom') { const ids = new Set(v.map((c) => c.id)); S.custom = [...S.custom.filter((c) => !ids.has(c.id)), ...v]; }
+    else if (k === 'progress') { for (const [id, l] of Object.entries(v)) S.progress[id] = [...new Set([...(S.progress[id] || []), ...l])].sort(); }
+    else if (v && typeof v === 'object' && !Array.isArray(v)) S[k] = { ...(S[k] || {}), ...v };
+  }
+  save();
+}
 export function askPersist() { try { navigator.storage?.persist?.(); } catch { /* not supported */ } }
 
 // ---------- Asanas (built-in + your edits + your own) ----------

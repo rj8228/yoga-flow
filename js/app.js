@@ -1,6 +1,9 @@
 import { fig, bodyFig, FIGS } from './figures.js';
 import { PARTS, GOALS, LEVELS, PREG, TRACKS, FLOWS, MOTHER, STOP_PRENATAL, STOP_POSTNATAL, SHOTS } from './data.js';
 import * as $ from './store.js';
+import './feedback.js';
+import * as BK from './backup.js';
+import * as CAM from './camera.js';
 
 const S = $.st();
 const view = document.getElementById('view');
@@ -198,20 +201,21 @@ function seq([tid = 'hips', lv = 'B']) {
 }
 
 function flow([fid = 'surya', lv = 'B']) {
-  const f = FLOWS.find((x) => x.id === fid) || FLOWS[0];
-  const n = f.steps.length; const W = 320; const T = n > 8 ? 48 : 58; const R = n > 8 ? 130 : 120;
-  const tiles = f.steps.map((s, i) => {
+  const f = FLOWS.find((x) => x.id === fid) || FLOWS[0]; const v = f.levels[lv] || f.levels.B;
+  const n = v.steps.length; const W = 320; const T = n > 12 ? 40 : n > 8 ? 48 : 58; const R = n > 12 ? 136 : n > 8 ? 130 : 120;
+  const tiles = v.steps.map((s, i) => {
     const a = $.asana(s[0]); const ang = ((-90 + (i * 360) / n) * Math.PI) / 180;
     const x = W / 2 + R * Math.cos(ang) - T / 2; const y = W / 2 + R * Math.sin(ang) - T / 2;
-    return `<a class="wtile" href="#/asana/${s[0]}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;width:${T}px;height:${T}px" aria-label="${i + 1}. ${esc(a?.sa)}"><span class="num">${i + 1}</span>${fig(s[3] || a?.fig, T - 10, 3.5)}<span class="breath b-${s[1]}">${ARROW[s[1]]}</span></a>`;
+    return `<a class="wtile" href="#/asana/${s[0]}" style="left:${x.toFixed(0)}px;top:${y.toFixed(0)}px;width:${T}px;height:${T}px" aria-label="${i + 1}. ${esc(a?.sa)}"><span class="num">${i + 1}</span>${fig(s[3] || a?.fig, T - 10, 3.5)}<span class="breath b-${s[1]}">${n > 12 ? ARROW[s[1]].split(' ')[0] : ARROW[s[1]]}</span></a>`;
   }).join('');
   return `<div class="page">${practiceHead('flow', f.id, lv)}
   ${chips(FLOWS.map((x) => [x.id, x.id === 'surya' ? 'Surya Namaskar' : x.name.replace(' flow', '')]), f.id, (k) => `#/flow/${k}/${lv}`)}
   ${levelSeg(lv, (l) => `#/flow/${f.id}/${l}`)}
-  ${lv === 'B' ? `<div class="wheel" style="width:${W}px;height:${W + 12}px"><div class="ring"></div><div class="wcenter"><b>${f.name}</b><small>${f.sub}</small><em>${f.rounds}</em></div>${tiles}</div>
-  <div class="row-gap"><a class="btn primary grow" href="#/play/flow/${f.id}/B">${ICON.play}Play with breath cues</a><button class="btn square" data-act="flowvid:${f.id}" aria-label="Record this flow">${ICON.cam}</button></div>
-  <section class="list"><h2 class="list-h">One round</h2>${f.steps.map((s, i) => { const a = $.asana(s[0]); return `<a class="row" href="#/asana/${s[0]}"><span class="num-l">${i + 1}</span><span class="grow"><b>${esc(a?.sa)}</b><small>${esc(s[2])}</small></span><span class="breath-p b-${s[1]}">${WORD[s[1]]}</span></a>`; }).join('')}</section>`
-    : `<div class="empty">${LEVELS[lv]} flows come next. Practise the Beginner flow and tell Claude what to change.</div>`}
+  ${n > 12 ? `<div class="card stack-4"><b class="h-md">${f.name}</b><small>${v.sub}</small><small class="green"><b>${v.rounds}</b></small></div>
+  <div class="fgrid">${v.steps.map((s, i) => { const a = $.asana(s[0]); return `<a class="ftile" href="#/asana/${s[0]}" aria-label="${i + 1}. ${esc(a?.sa)}"><span class="num">${i + 1}</span>${fig(s[3] || a?.fig, 42, 3.5)}<span class="breath b-${s[1]}">${ARROW[s[1]].split(' ')[0]}</span></a>`; }).join('')}</div>`
+    : `<div class="wheel" style="width:${W}px;height:${W + 12}px"><div class="ring"></div><div class="wcenter"><b>${f.name}</b><small>${v.sub}</small><em>${v.rounds}</em></div>${tiles}</div>`}
+  <div class="row-gap"><a class="btn primary grow" href="#/play/flow/${f.id}/${lv}">${ICON.play}Play with breath cues</a><button class="btn square" data-act="flowvid:${f.id}" aria-label="Record this flow">${ICON.cam}</button></div>
+  <section class="list"><h2 class="list-h">One round</h2>${v.steps.map((s, i) => { const a = $.asana(s[0]); return `<a class="row" href="#/asana/${s[0]}"><span class="num-l">${i + 1}</span><span class="grow"><b>${esc(a?.sa)}</b><small>${esc(s[2])}</small></span><span class="breath-p b-${s[1]}">${WORD[s[1]]}</span></a>`; }).join('')}</section>
   </div>`;
 }
 
@@ -220,8 +224,8 @@ let P = null; let timer = null;
 function play([kind, id, lv = 'B']) {
   let steps; let rounds = 1; let title;
   if (kind === 'flow') {
-    const f = FLOWS.find((x) => x.id === id) || FLOWS[0]; title = f.name; rounds = parseInt(f.rounds, 10) || 4;
-    steps = f.steps.map((s) => { const a = $.asana(s[0]); return { id: s[0], fig: s[3] || a.fig, title: a.sa, sub: s[2], breath: s[1], secs: 0 }; });
+    const f = FLOWS.find((x) => x.id === id) || FLOWS[0]; const v = f.levels[lv] || f.levels.B; title = f.name; rounds = parseInt(v.rounds, 10) || 4;
+    steps = v.steps.map((s) => { const a = $.asana(s[0]); return { id: s[0], fig: s[3] || a.fig, title: a.sa, sub: s[2], breath: s[1], secs: 0 }; });
   } else {
     const t = TRACKS.find((x) => x.id === id) || TRACKS[1]; const d = t.levels[lv] || t.levels.B; title = t.name;
     steps = [...d.warm, ...d.main, ...d.cool].map(([aid, m, det]) => { const a = $.asana(aid); return { id: aid, fig: a.fig, title: a.sa, sub: det || a.en, breath: null, secs: m * 60 }; });
@@ -303,7 +307,7 @@ function create(_, q) {
   <section class="stack"><h2>Next 3 posts</h2>${ideas.map((x, i) => `<div class="card stack-6"><div class="row-between small"><b class="blue-t">${x.type}</b><span class="muted">${x.src}</span></div><b class="hook">“${esc(x.hook)}”</b>
     <div class="row-gap"><a class="small link" href="#/asana/${x.a.id}">${esc(x.a.sa)}</a><span class="grow"></span><button class="btn sm" data-act="copy:${i}">Copy caption</button><button class="btn sm" data-act="post:${x.a.id}">Mark posted</button></div></div>`).join('')}</section>
   <a class="card row-gap" href="#/badges"><span class="badges-mini">${$.badges().slice(0, 4).map((b) => `<i class="${b.earned ? 'on' : ''}"></i>`).join('')}</span><b class="grow">${earned} badge${earned === 1 ? '' : 's'} earned</b><span class="link small">See all</span></a>
-  <p class="small muted">Your photos and videos are saved on this phone for now. Cloud backup comes in the next version.</p>
+  <a class="card row-gap" href="#/backup"><span class="grow"><b>Backup</b><small>Photos and videos are saved on this phone only. Last backup: ${S.ui.lastBackup ? new Date(S.ui.lastBackup).toLocaleDateString() : 'never'}</small></span><span class="link small">Back up</span></a>
   </div>`;
 }
 function recQueue(tid) {
@@ -339,6 +343,38 @@ function badges() {
   </div>`;
 }
 
+
+// ---------- In-app camera ----------
+let CAMSTATE = {};
+async function startCam() {
+  const v = document.getElementById('cam'); if (!v) return;
+  try { await CAM.start(v, S.ui.facing || 'user', !CAMSTATE.photo); document.getElementById('cam-msg').hidden = true; }
+  catch { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'The camera is not available here. Allow camera access in Settings, or use “Upload instead”.'; }
+}
+function cameraView([target = 'main', id], q) {
+  const flowObj = target === 'flow' ? FLOWS.find((f) => f.id === id) : null;
+  const a = flowObj ? $.asana(flowObj.levels.B.steps[0][0]) : $.asana(id);
+  if (!a) return '<div class="page"><p>Not found.</p></div>';
+  const ret = q.ret || `#/asana/${id}`; const photo = q.photo === '1';
+  CAMSTATE = { target, id, ret, photo };
+  const label = flowObj ? flowObj.name : target === 'main' ? (photo ? 'Pose photo' : 'Pose video') : target === 'prog' ? 'Monthly progress' : (SHOTS.find(([k]) => k === target.slice(5)) || [, 'Clip'])[1];
+  after = () => { if (CAM.supported()) startCam(); else { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'This browser cannot record inside the app. Use “Upload instead” to open the phone camera.'; } };
+  return `<div class="rec">
+  <header class="row-between"><a class="icon-btn" href="${esc(ret)}" aria-label="Close camera">${ICON.close}</a><span class="center"><b>${esc(flowObj ? flowObj.name : a.sa)}</b><small>${esc(label)}</small></span><button class="link-d" data-act="camupload">Upload instead</button></header>
+  <div class="frame cam-frame"><video id="cam" playsinline muted></video>
+    <span class="ghost" id="cam-ghost">${fig(a.fig, 240, 1.5)}</span>
+    <span class="tagw">${esc(label)}</span><span class="cam-time" id="cam-time"></span>
+    <span class="cam-count" id="cam-count" hidden></span>
+    <span class="cue">Cue: “${esc(a.cues[0] || '')}”</span>
+    <p class="cam-msg" id="cam-msg" hidden></p></div>
+  <div class="rec-foot"><div class="row-between">
+    <button class="sq" data-act="camoutline">Outline</button>
+    <button class="recbtn ${photo ? 'photo' : ''}" id="cam-go" data-act="camgo" aria-label="${photo ? 'Take photo' : 'Start recording'}"><span></span></button>
+    <button class="sq" data-act="camflip">Flip</button></div>
+    <p class="small center">${photo ? 'Tap to take the photo.' : 'Tap to start: 3-second countdown. Tap again to stop and save.'}</p></div>
+  </div>`;
+}
+
 // ---------- Mother ----------
 function mother([sid = 't2']) {
   const m = MOTHER.find((x) => x.id === sid) || MOTHER[1]; const post = m.id === 'post';
@@ -367,12 +403,34 @@ function toast(msg) {
   setTimeout(() => t.remove(), 2200);
 }
 const pts = (n, msg = '') => toast(n ? `${msg}+${n} pts` : msg || 'Saved');
+const SAVE = {
+  async main(id, f) {
+    $.askPersist(); await $.putMedia('main:' + id, f); S.main[id] = f.type.startsWith('video') ? 'video' : 'image'; $.save();
+    pts($.award(S.main[id] === 'video' ? 'clip' : 'photo', 'main:' + id), 'Now yours! ');
+  },
+  async shot(id, f, k) {
+    $.askPersist(); await $.putMedia(`shot:${id}:${k}`, f);
+    S.shots[id] = { ...$.shotsOf(id), [k]: true }; S.ui.recShot = null; $.save();
+    pts($.award('clip', `${id}:${k}`), 'Shot saved ');
+    if ($.shotCount(id) === 4) setTimeout(() => toast('All 4 shots done for this pose ✓'), 2300);
+  },
+  async prog(id, f) {
+    const t = Date.now(); $.askPersist(); await $.putMedia(`prog:${id}:${t}`, f); S.progress[id] = [...(S.progress[id] || []), t]; $.save();
+    pts($.award('progress', `${id}:${t}`), 'Progress saved ');
+  },
+  async flow(fid, f) {
+    const t = Date.now(); $.askPersist(); await $.putMedia(`flow:${fid}:${t}`, f);
+    pts($.award('clip', `flow:${fid}:${t}`), 'Flow saved ');
+  }
+};
+const saverOf = (target) => (target.startsWith('shot-') ? 'shot' : target);
+function openCamera(target, id, photo) { location.hash = `#/camera/${target}/${id}?ret=${encodeURIComponent(location.hash || '#/home')}${photo ? '&photo=1' : ''}`; }
+
 const ACT = {
   back: () => (history.length > 1 ? history.back() : (location.hash = '#/home')),
   async media(id, kind) {
-    const f = await pick(kind === 'video' ? 'video/*' : 'image/*'); if (!f) return;
-    $.askPersist(); await $.putMedia('main:' + id, f); S.main[id] = f.type.startsWith('video') ? 'video' : 'image'; $.save();
-    pts($.award(S.main[id] === 'video' ? 'clip' : 'photo', 'main:' + id), 'Now yours! '); render();
+    if (kind === 'video' && CAM.supported()) return openCamera('main', id);
+    const f = await pick(kind === 'video' ? 'video/*' : 'image/*'); if (f) { await SAVE.main(id, f); render(); }
   },
   async clearmedia(id) { await $.delMedia('main:' + id); delete S.main[id]; $.save(); render(); },
   async share(id) {
@@ -382,12 +440,8 @@ const ACT = {
     else toast('Sharing files is not supported in this browser');
   },
   async shot(id, k) {
-    const f = await pick('video/*,image/*'); if (!f) return;
-    $.askPersist(); await $.putMedia(`shot:${id}:${k}`, f);
-    S.shots[id] = { ...$.shotsOf(id), [k]: true }; S.ui.recShot = null; $.save();
-    pts($.award('clip', `${id}:${k}`), 'Shot saved ');
-    if ($.shotCount(id) === 4) toast('All 4 shots done for this pose ✓');
-    render();
+    if (CAM.supported()) return openCamera('shot-' + k, id);
+    const f = await pick('video/*,image/*'); if (f) { await SAVE.shot(id, f, k); render(); }
   },
   script(id) { S.scripts[id] = true; $.save(); pts($.award('script', id), 'Script ready '); render(); },
   post(id) { S.posted[id] = Date.now(); S.reuse[id] = { ...(S.reuse[id] || {}), post: true }; $.save(); pts($.award('post', id), 'Posted '); render(); },
@@ -398,16 +452,45 @@ const ACT = {
     $.save(); render();
   },
   async progress(id) {
-    const f = await pick('video/*'); if (!f) return; const t = Date.now();
-    $.askPersist(); await $.putMedia(`prog:${id}:${t}`, f); S.progress[id] = [...(S.progress[id] || []), t]; $.save();
-    pts($.award('progress', `${id}:${t}`), 'Progress saved '); render();
+    if (CAM.supported()) return openCamera('prog', id);
+    const f = await pick('video/*'); if (f) { await SAVE.prog(id, f); render(); }
   },
   async flowvid(fid) {
-    const f = await pick('video/*'); if (!f) return; const t = Date.now();
-    $.askPersist(); await $.putMedia(`flow:${fid}:${t}`, f);
-    pts($.award('clip', `flow:${fid}:${t}`), 'Flow saved ');
+    if (CAM.supported()) return openCamera('flow', fid);
+    const f = await pick('video/*'); if (f) await SAVE.flow(fid, f);
+  },
+  async camgo() {
+    const v = document.getElementById('cam'); const btn = document.getElementById('cam-go');
+    const { target, id, ret, photo } = CAMSTATE; if (!v || btn.dataset.busy) return;
+    if (photo) { const b = await CAM.snap(v); CAM.stop(); await SAVE[saverOf(target)](id, b, target.slice(5)); location.replace(ret); return; }
+    if (CAM.recording()) {
+      btn.dataset.busy = '1'; const blob = await CAM.finish(); CAM.stop();
+      if (blob && blob.size) await SAVE[saverOf(target)](id, blob, target.slice(5));
+      location.replace(ret); return;
+    }
+    btn.dataset.busy = '1'; await CAM.count(document.getElementById('cam-count')); delete btn.dataset.busy;
+    btn.classList.add('on'); btn.setAttribute('aria-label', 'Stop recording');
+    CAM.record((sec) => { const t = document.getElementById('cam-time'); if (t) t.textContent = `● ${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`; });
+  },
+  async camflip() { if (CAM.recording()) return; S.ui.facing = S.ui.facing === 'environment' ? 'user' : 'environment'; $.save(); await startCam(); },
+  camoutline() { document.getElementById('cam-ghost')?.classList.toggle('off'); },
+  async camupload() {
+    const { target, id, ret, photo } = CAMSTATE; const f = await pick(photo ? 'image/*' : 'video/*,image/*'); if (!f) return;
+    CAM.stop(); await SAVE[saverOf(target)](id, f, target.slice(5)); location.replace(ret);
   },
   prompt() { pts($.donePrompt(), 'Prompt done '); render(); },
+  async backup() {
+    toast('Making your backup…');
+    const f = await BK.makeBackup();
+    const r = await BK.deliver(f);
+    if (r !== 'cancelled') toast(r === 'downloaded' ? 'Backup file downloaded' : 'Backup saved');
+    render();
+  },
+  async restore() {
+    const f = await pick('.zip,application/zip'); if (!f) return;
+    if (!confirm('Restore this backup? It is added to what is already on this device.')) return;
+    toast('Restoring…'); const n = await BK.restore(f); toast(`Restored ${n} photos and videos`); render();
+  },
   copy(i) {
     const x = $.postIdeas()[+i]; if (!x) return;
     navigator.clipboard?.writeText(x.caption).then(() => toast('Caption copied'), () => toast('Could not copy'));
@@ -446,8 +529,12 @@ document.addEventListener('input', (e) => {
 });
 
 // ---------- Router ----------
-const ROUTES = { home, library, part, asana: asanaView, edit, seq, flow, play, create, record, badges, mother };
-const TAB_OF = { home: 'home', library: 'library', part: 'library', asana: 'library', edit: 'library', seq: 'practice', flow: 'practice', play: 'practice', create: 'create', record: 'create', badges: 'create', mother: 'mother' };
+function backupView() {
+  after = async () => { const st = await BK.stats(); if (document.body.dataset.screen === 'backup') view.innerHTML = BK.screen(st); };
+  return BK.screen({ files: '…', bytes: 0, last: S.ui.lastBackup });
+}
+const ROUTES = { home, library, part, asana: asanaView, edit, seq, flow, play, create, record, badges, mother, backup: backupView, camera: cameraView };
+const TAB_OF = { home: 'home', library: 'library', part: 'library', asana: 'library', edit: 'library', seq: 'practice', flow: 'practice', play: 'practice', create: 'create', record: 'create', badges: 'create', backup: 'create', camera: 'create', mother: 'mother' };
 let after = null;
 async function hydrate() {
   for (const el of view.querySelectorAll('[data-media]')) {
@@ -461,7 +548,7 @@ function tabs(cur) {
   tabsEl.innerHTML = T.map(([k, l, h, ic]) => `<a href="${h}" class="${k === cur ? 'on' : ''}" ${k === cur ? 'aria-current="page"' : ''}>${ic}<span>${l}</span></a>`).join('');
 }
 function draw() {
-  stopPlayer(); after = null;
+  stopPlayer(); CAM.stop(); after = null;
   const h = location.hash.slice(1) || '/home'; const [path, qs] = h.split('?');
   const parts = path.split('/').filter(Boolean); const name = ROUTES[parts[0]] ? parts[0] : 'home';
   const q = Object.fromEntries(new URLSearchParams(qs || ''));

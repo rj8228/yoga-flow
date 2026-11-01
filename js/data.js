@@ -246,7 +246,15 @@ export const TRACKS = [
     B: S([['skandha', 2, 'Forward and back'], ['cat', 2, 'Cat–Cow, 8 rounds'], ['urdhvahasta', 1, '3 slow lifts']],
       [['puppy', 3, '5 breaths × 2'], ['threadneedle', 4, '5 breaths each side'], ['bhujangasana', 3, 'Low cobra, 3 rounds'], ['bridge', 3, '3 rounds of 5 breaths'], ['matsyasana', 3, 'Supported on a block']],
       [['suptabaddha', 4, 'Bolster under the spine'], ['savasana', 5, 'Arms open']],
-      'Arms overhead in Urdhva Hastasana for 5 breaths without ribs flaring or shoulder pain.') } },
+      'Arms overhead in Urdhva Hastasana for 5 breaths without ribs flaring or shoulder pain.'),
+    I: S([['skandha', 2, 'Forward and back'], ['cat', 2, 'Cat–Cow, 8 rounds'], ['downdog', 2, '5 breaths']],
+      [['vira1', 3, 'Arms up, chest lifts, 5 breaths each side'], ['puppy', 3, '8 breaths'], ['salabhasana', 3, 'Hands clasped behind, 3 rounds'], ['gomukhasana', 3, 'Arms only, strap, each side'], ['ustrasana', 3, 'Hands on lower back or blocks, 2 rounds'], ['dhanurasana', 3, 'With a strap, 2 rounds']],
+      [['suptamatsy', 3, '5 breaths each side'], ['savasana', 3, '']],
+      'Camel with hands on blocks for 5 breaths, chest lifted, no pinch in the lower back.'),
+    A: S([['skandha', 2, 'Forward and back'], ['cat', 2, '8 rounds'], ['downdog', 2, '5 breaths']],
+      [['hastauttan', 2, '3 slow rounds'], ['ustrasana', 3, 'Hands to heels, 2 rounds'], ['dhanurasana', 3, '3 rounds'], ['bridge', 2, 'Prep, 3 rounds'], ['wheel', 4, '3 rounds of 3–5 breaths'], ['matsyasana', 4, 'Supported, to recover']],
+      [['apanasana', 2, 'Neutralise the spine'], ['suptamatsy', 2, 'Each side'], ['savasana', 2, '']],
+      'Wheel with straight arms and parallel elbows for 5 calm breaths.') } },
   { id: 'hips', name: 'Hip mobility', sub: 'Flexion, rotation, groin release', levels: {
     B: S([['sukhasana', 1, 'Blanket, belly breathing'], ['hipcircles', 2, '5 each way, each leg'], ['cat', 3, 'Cat–Cow, 8 rounds']],
       [['baddhakona', 3, '5 breaths × 2, blocks under thighs'], ['malasana', 2, '5 breaths × 2, block under hips'], ['anjaneyasana', 3, '5 breaths each side'], ['sucirandhrasana', 4, '8 breaths each side'], ['suptapada', 3, '6 breaths each side, strap'], ['bridge', 3, '3 rounds of 5 breaths']],
@@ -264,48 +272,133 @@ export const TRACKS = [
     B: S([['pelvictilt', 3, '10 slow tilts'], ['apanasana', 2, 'Rock side to side'], ['cat', 3, 'Cat–Cow, 8 rounds']],
       [['birddog', 4, '5 reps each side'], ['bridge', 4, '3 rounds of 5 breaths'], ['bhujangasana', 3, 'Low cobra, 3 rounds'], ['sucirandhrasana', 3, '6 breaths each side'], ['balasana', 2, 'Knees wide']],
       [['suptamatsy', 3, '5 breaths each side'], ['savasana', 3, 'Bolster under the knees']],
-      'Bird dog 5 reps each side with level hips and no back pain afterward.') } },
+      'Bird dog 5 reps each side with level hips and no back pain afterward.'),
+    I: S([['pelvictilt', 2, '10 tilts'], ['cat', 2, '8 rounds'], ['birddog', 2, 'Slow warm-up reps']],
+      [['salabhasana', 3, '3 rounds of 3 breaths'], ['bridge', 3, '5 lifts, then hold 5 breaths'], ['onelegbridge', 3, '3 breaths each side'], ['sideleg', 3, '10 lifts each side'], ['ardhamatsy', 3, 'Gentle twist, each side'], ['balasana', 3, 'Knees wide']],
+      [['suptamatsy', 3, '5 breaths each side'], ['savasana', 3, '']],
+      'Locust 3 × 3 breaths and one-leg bridge with no back pain the next day.'),
+    A: S([['cat', 2, '8 rounds'], ['downdog', 2, '5 breaths'], ['birddog', 2, '5 reps each side']],
+      [['plank', 3, '3 × 5 breaths'], ['navasana', 3, 'Knees bent, 3 rounds'], ['salabhasana', 3, '3 rounds'], ['dhanurasana', 3, '2 rounds'], ['vira3', 3, '5 breaths each side'], ['ardhamatsy', 3, 'Each side']],
+      [['apanasana', 2, ''], ['suptamatsy', 2, 'Each side'], ['savasana', 2, '']],
+      'Plank for 30 seconds with a neutral back and Boat for 5 breaths, pain-free.') } },
   { id: 'knees', name: 'Knee care', sub: 'Strength, alignment, range', levels: {
     B: S([['goolf', 2, '10 each way'], ['janu', 2, 'Small circles'], ['cat', 2, '8 rounds']],
       [['dandasana', 3, 'Press backs of knees down, 10 × 5 s'], ['legraise', 4, '10 lifts each leg'], ['utkatasana', 3, 'Shallow, 3 rounds'], ['calfraise', 3, '15 slow lifts'], ['vira2', 3, 'Short stance'], ['bridge', 2, '3 rounds']],
       [['suptapada', 3, 'Strap, bent knee if needed'], ['savasana', 3, '']],
-      'Chair pose 5 breaths with knees tracking over toes and no pain.') } },
+      'Chair pose 5 breaths with knees tracking over toes and no pain.'),
+    I: S([['goolf', 2, '10 each way'], ['janu', 2, 'Small circles'], ['legraise', 2, '8 lifts each leg']],
+      [['utkatasana', 3, 'Deeper, 5 breaths × 3'], ['vira2', 3, 'Full stance, each side'], ['vira1', 3, 'Each side'], ['vrksasana', 3, 'Each side'], ['garudasana', 3, 'Legs wrapped if pain-free'], ['malasana', 3, 'Block under the hips']],
+      [['suptapada', 3, 'Each side'], ['savasana', 3, '']],
+      'Malasana on a block for 8 breaths with no knee pain.'),
+    A: S([['goolf', 2, '10 each way'], ['janu', 2, 'Small circles'], ['cat', 2, '8 rounds']],
+      [['utkatasana', 3, 'Hold 8 breaths'], ['vira3', 3, 'Each side'], ['garudasana', 3, 'Each side'], ['malasana', 3, 'No block'], ['virasana', 3, 'On a block'], ['anjaneyasana', 3, 'Each side']],
+      [['suptapada', 3, 'Each side'], ['savasana', 3, '']],
+      'Virasana on a low block for 1 minute, pain-free.') } },
   { id: 'neck', name: 'Neck care', sub: 'Cervical mobility, posture', levels: {
     B: S([['griva', 3, '5 slow rounds'], ['skandha', 3, 'Forward and back']],
       [['neckpress', 3, '5 × 5 s each way'], ['threadneedle', 4, '5 breaths each side'], ['cat', 3, '8 rounds'], ['puppy', 3, '5 breaths'], ['matsyasana', 3, 'Supported on blocks']],
       [['balasana', 3, 'Forehead on a block'], ['savasana', 5, 'Towel under the neck']],
-      'Turn the head comfortably to each side with no pain for a full week.') } },
+      'Turn the head comfortably to each side with no pain for a full week.'),
+    I: S([['griva', 3, '5 slow rounds'], ['skandha', 3, 'Forward and back']],
+      [['neckpress', 3, '5 × 8 s each way'], ['threadneedle', 3, 'Each side'], ['garudasana', 3, 'Arms only'], ['gomukhasana', 3, 'Arms only, strap'], ['puppy', 3, '8 breaths'], ['matsyasana', 3, 'Supported']],
+      [['balasana', 2, ''], ['savasana', 4, 'Towel under the neck']],
+      'Neck presses held 8 seconds each way with no symptoms.'),
+    A: S([['griva', 3, '5 slow rounds'], ['skandha', 3, 'Forward and back']],
+      [['neckpress', 3, '5 × 8 s each way'], ['cat', 2, '8 rounds'], ['plank', 3, 'Neck long, 3 × 5 breaths'], ['salabhasana', 3, 'Gaze down'], ['ustrasana', 3, 'Chin slightly in'], ['matsyasana', 4, 'Supported']],
+      [['balasana', 2, ''], ['savasana', 4, '']],
+      'Camel and Fish with a relaxed neck for 5 breaths.') } },
   { id: 'fullbody', name: 'Full body', sub: 'Balanced daily practice', levels: {
     B: S([['cat', 2, '8 rounds'], ['downdog', 2, '5 breaths'], ['urdhvahasta', 2, '3 slow lifts']],
       [['vira1', 3, '5 breaths each side'], ['vira2', 3, '5 breaths each side'], ['trikonasana', 3, '5 breaths each side'], ['vrksasana', 3, '5 breaths each side'], ['bridge', 3, '3 rounds'], ['birddog', 3, '5 reps each side']],
       [['suptamatsy', 3, '5 breaths each side'], ['savasana', 3, '']],
-      'All standing poses held 5 breaths each side with steady breath.') } }
+      'All standing poses held 5 breaths each side with steady breath.'),
+    I: S([['cat', 2, '8 rounds'], ['downdog', 2, '5 breaths'], ['urdhvahasta', 2, '3 slow lifts']],
+      [['vira2', 3, 'Each side'], ['trikonasana', 3, 'Each side'], ['parsvottanasana', 3, 'Each side'], ['vira3', 3, 'Each side'], ['salabhasana', 3, '3 rounds'], ['navasana', 3, '3 rounds']],
+      [['suptamatsy', 3, 'Each side'], ['savasana', 3, '']],
+      'Warrior III for 5 breaths each side with level hips.'),
+    A: S([['cat', 2, '8 rounds'], ['downdog', 2, '5 breaths'], ['hastauttan', 2, '3 rounds']],
+      [['chaturanga', 3, '3 slow lowers'], ['bakasana', 3, '3 attempts'], ['vira3', 3, 'Each side'], ['ustrasana', 3, '2 rounds'], ['wheel', 3, '3 rounds'], ['navasana', 3, '3 rounds']],
+      [['apanasana', 2, ''], ['suptamatsy', 2, 'Each side'], ['savasana', 2, '']],
+      'Crow for 5 breaths and Wheel for 3 rounds with a steady breath.') } }
 ];
 
 // Flow step: [asanaId, breath (In|Ex|Hold), cue, figOverride]
+const L = (sub, rounds, steps) => ({ sub, rounds, steps });
+const SURYA = (cue5) => [
+  ['pranamasana', 'Ex', 'Palms together at the heart'], ['hastauttan', 'In', 'Arms up, chest lifts'], ['padahasta', 'Ex', 'Fold, hands beside the feet'],
+  ['ashwa', 'In', 'Right leg back, chest lifts'], ['plank', 'Hold', cue5], ['ashtanga', 'Ex', 'Knees, chest, chin down'],
+  ['bhujangasana', 'In', 'Slide forward and lift'], ['downdog', 'Ex', 'Hips up and back'], ['ashwa', 'In', 'Right foot forward'],
+  ['padahasta', 'Ex', 'Step together and fold'], ['hastauttan', 'In', 'Rise, arms up'], ['pranamasana', 'Ex', 'Hands to the heart']];
 export const FLOWS = [
-  { id: 'surya', name: 'Surya Namaskar', sub: '12 poses, one breath each', rounds: '4 rounds · 2 each side · about 6 min', steps: [
-    ['pranamasana', 'Ex', 'Palms together at the heart'], ['hastauttan', 'In', 'Arms up, chest lifts'], ['padahasta', 'Ex', 'Fold, hands beside the feet'],
-    ['ashwa', 'In', 'Right leg back, chest lifts'], ['plank', 'Hold', 'Step back into plank'], ['ashtanga', 'Ex', 'Knees, chest, chin down'],
-    ['bhujangasana', 'In', 'Slide forward and lift'], ['downdog', 'Ex', 'Hips up and back'], ['ashwa', 'In', 'Right foot forward'],
-    ['padahasta', 'Ex', 'Step together and fold'], ['hastauttan', 'In', 'Rise, arms up'], ['pranamasana', 'Ex', 'Hands to the heart']] },
-  { id: 'hips', name: 'Hip flow', sub: '8 moves, one breath each', rounds: '4 rounds · right then left · about 5 min', steps: [
-    ['urdhvahasta', 'In', 'Arms up'], ['uttanasana', 'Ex', 'Fold, soft knees'], ['anjaneyasana', 'In', 'Right leg back, arms up'], ['ardhahanuman', 'Ex', 'Hips back, half split'],
-    ['anjaneyasana', 'In', 'Forward into lunge, arms up'], ['malasana', 'Ex', 'Step into a squat'], ['ardhauttanasana', 'In', 'Lift the hips, lengthen'], ['pranamasana', 'Ex', 'Rise, hands to heart']] },
-  { id: 'chest', name: 'Chest flow', sub: '6 moves on the mat', rounds: '5 rounds · about 4 min', steps: [
-    ['balasana', 'Ex', 'Sit back, arms long'], ['cow', 'In', 'Forward to tabletop, chest lifts'], ['puppy', 'Ex', 'Hips over knees, chest melts'],
-    ['bhujangasana', 'In', 'Glide forward, low cobra'], ['downdog', 'Ex', 'Press back to down dog'], ['cow', 'In', 'Knees down, chest lifts']] },
-  { id: 'lowerback', name: 'Lower back flow', sub: '6 gentle moves', rounds: '5 rounds · switch sides in bird dog · about 4 min', steps: [
-    ['cat', 'Ex', 'Round the spine'], ['cow', 'In', 'Lift the chest'], ['balasana', 'Ex', 'Sit back to child'],
-    ['bhujangasana', 'In', 'Glide forward, low cobra'], ['balasana', 'Ex', 'Press back to child'], ['birddog', 'In', 'Tabletop, reach arm and opposite leg']] },
-  { id: 'knees', name: 'Knee flow', sub: '4 standing moves', rounds: '8 rounds · about 3 min', steps: [
-    ['urdhvahasta', 'In', 'Arms up'], ['utkatasana', 'Ex', 'Sit back, knees over toes'], ['calfraise', 'In', 'Rise to the toes'], ['tadasana', 'Ex', 'Heels down, arms down']] },
-  { id: 'neck', name: 'Neck flow', sub: '6 seated moves', rounds: '5 rounds · slow · about 3 min', steps: [
-    ['griva', 'In', 'Sit tall, head centre', 'neckcenter'], ['griva', 'Ex', 'Chin toward chest', 'neckdown'], ['griva', 'In', 'Lift to centre', 'neckcenter'],
-    ['griva', 'Ex', 'Right ear toward right shoulder', 'necktilt'], ['griva', 'In', 'Back to centre', 'neckcenter'], ['griva', 'Ex', 'Left ear toward left shoulder', 'necktilt']] },
-  { id: 'fullbody', name: 'Full body flow', sub: '8 moves, one breath each', rounds: '4 rounds · about 5 min', steps: [
-    ['urdhvahasta', 'In', 'Arms up'], ['uttanasana', 'Ex', 'Fold'], ['ardhauttanasana', 'In', 'Lift halfway'], ['downdog', 'Ex', 'Step back to down dog'],
-    ['plank', 'In', 'Shift forward to plank'], ['ashtanga', 'Ex', 'Knees down, lower the chest'], ['bhujangasana', 'In', 'Cobra'], ['downdog', 'Ex', 'Press back']] }
+  { id: 'surya', name: 'Surya Namaskar', levels: {
+    B: L('12 poses, gentle, knees down', '4 rounds · 2 each side · about 6 min', SURYA('Knees down, gentle plank')),
+    I: L('Classic 12 poses, one breath each', '6 rounds · 3 each side · about 8 min', SURYA('Step back into a full plank')),
+    A: L('Surya Namaskar B style, 18 moves', '4 rounds · about 10 min', [
+      ['utkatasana', 'In', 'Chair, arms up'], ['uttanasana', 'Ex', 'Fold'], ['ardhauttanasana', 'In', 'Lift halfway'], ['chaturanga', 'Ex', 'Step or float back and lower'],
+      ['bhujangasana', 'In', 'Lift the chest'], ['downdog', 'Ex', 'Hips up and back'], ['vira1', 'In', 'Right foot forward, Warrior I'], ['chaturanga', 'Ex', 'Hands down, step back, lower'],
+      ['bhujangasana', 'In', 'Lift the chest'], ['downdog', 'Ex', 'Hips up and back'], ['vira1', 'In', 'Left foot forward, Warrior I'], ['chaturanga', 'Ex', 'Step back and lower'],
+      ['bhujangasana', 'In', 'Lift the chest'], ['downdog', 'Ex', 'Stay for 5 breaths'], ['ardhauttanasana', 'In', 'Step forward, lift halfway'], ['uttanasana', 'Ex', 'Fold'],
+      ['utkatasana', 'In', 'Sit into Chair, arms up'], ['tadasana', 'Ex', 'Stand, arms down']]) } },
+  { id: 'hips', name: 'Hip flow', levels: {
+    B: L('8 moves, one breath each', '4 rounds · right then left · about 5 min', [
+      ['urdhvahasta', 'In', 'Arms up'], ['uttanasana', 'Ex', 'Fold, soft knees'], ['anjaneyasana', 'In', 'Right leg back, arms up'], ['ardhahanuman', 'Ex', 'Hips back, half split'],
+      ['anjaneyasana', 'In', 'Forward into lunge, arms up'], ['malasana', 'Ex', 'Step into a squat'], ['ardhauttanasana', 'In', 'Lift the hips, lengthen'], ['pranamasana', 'Ex', 'Rise, hands to heart']]),
+    I: L('6 moves from down dog', '6 rounds · alternate sides · about 6 min', [
+      ['downdog', 'Ex', 'Down dog'], ['anjaneyasana', 'In', 'Right foot forward, knee down, arms up'], ['lizard', 'Ex', 'Hands inside the foot, sink into lizard'],
+      ['anjaneyasana', 'In', 'Rise, arms up'], ['ardhahanuman', 'Ex', 'Hips back, half split'], ['anjaneyasana', 'In', 'Forward into lunge']]),
+    A: L('8 moves into the splits', '4 rounds · alternate sides · about 7 min', [
+      ['downdog', 'Ex', 'Down dog'], ['vira2', 'In', 'Right foot forward, Warrior II'], ['trikonasana', 'Ex', 'Straighten, reach into Triangle'], ['vira2', 'In', 'Bend back into Warrior II'],
+      ['lizard', 'Ex', 'Frame the foot, lizard'], ['anjaneyasana', 'In', 'Back knee down, arms up'], ['hanuman', 'Ex', 'Slide into the split on blocks'], ['ardhahanuman', 'In', 'Half split, lengthen']]) } },
+  { id: 'chest', name: 'Chest flow', levels: {
+    B: L('6 moves on the mat', '5 rounds · about 4 min', [
+      ['balasana', 'Ex', 'Sit back, arms long'], ['cow', 'In', 'Forward to tabletop, chest lifts'], ['puppy', 'Ex', 'Hips over knees, chest melts'],
+      ['bhujangasana', 'In', 'Glide forward, low cobra'], ['downdog', 'Ex', 'Press back to down dog'], ['cow', 'In', 'Knees down, chest lifts']]),
+    I: L('6 moves with Warrior I', '6 rounds · alternate sides · about 5 min', [
+      ['downdog', 'Ex', 'Down dog'], ['plank', 'In', 'Shift forward to plank'], ['chaturanga', 'Ex', 'Lower halfway'],
+      ['bhujangasana', 'In', 'Cobra, chest wide'], ['downdog', 'Ex', 'Press back'], ['vira1', 'In', 'Step forward, Warrior I, arms up']]),
+    A: L('6 deep backbend moves', '4 rounds · about 6 min', [
+      ['bhujangasana', 'In', 'Cobra'], ['balasana', 'Ex', 'Press back to child'], ['ustrasana', 'In', 'Rise to kneeling, Camel'],
+      ['balasana', 'Ex', 'Child'], ['dhanurasana', 'In', 'Slide to the belly, Bow'], ['balasana', 'Ex', 'Press back to child']]) } },
+  { id: 'lowerback', name: 'Lower back flow', levels: {
+    B: L('6 gentle moves', '5 rounds · switch sides in bird dog · about 4 min', [
+      ['cat', 'Ex', 'Round the spine'], ['cow', 'In', 'Lift the chest'], ['balasana', 'Ex', 'Sit back to child'],
+      ['bhujangasana', 'In', 'Glide forward, low cobra'], ['balasana', 'Ex', 'Press back to child'], ['birddog', 'In', 'Tabletop, reach arm and opposite leg']]),
+    I: L('6 core and back moves', '6 rounds · alternate sides · about 5 min', [
+      ['cat', 'Ex', 'Round the spine'], ['birddog', 'In', 'Right arm, left leg'], ['cat', 'Ex', 'Elbow to knee'],
+      ['birddog', 'In', 'Reach again'], ['balasana', 'Ex', 'Sit back to child'], ['bhujangasana', 'In', 'Glide forward, cobra']]),
+    A: L('6 strength moves', '5 rounds · about 5 min', [
+      ['downdog', 'Ex', 'Down dog'], ['plank', 'In', 'Shift forward to plank'], ['chaturanga', 'Ex', 'Lower to the belly'],
+      ['salabhasana', 'In', 'Locust, lift chest and legs'], ['balasana', 'Ex', 'Press back to child'], ['cow', 'In', 'Come to tabletop, chest lifts']]) } },
+  { id: 'knees', name: 'Knee flow', levels: {
+    B: L('4 standing moves', '8 rounds · about 3 min', [
+      ['urdhvahasta', 'In', 'Arms up'], ['utkatasana', 'Ex', 'Sit back, knees over toes'], ['calfraise', 'In', 'Rise to the toes'], ['tadasana', 'Ex', 'Heels down, arms down']]),
+    I: L('6 strength moves', '6 rounds · about 4 min', [
+      ['urdhvahasta', 'In', 'Arms up'], ['utkatasana', 'Ex', 'Chair, sit deeper'], ['calfraise', 'In', 'Rise to the toes'],
+      ['malasana', 'Ex', 'Lower into a squat on a block'], ['utkatasana', 'In', 'Rise to Chair'], ['tadasana', 'Ex', 'Stand tall']]),
+    A: L('6 strength and balance moves', '6 rounds · alternate legs · about 5 min', [
+      ['urdhvahasta', 'In', 'Stand, arms up'], ['utkatasana', 'Ex', 'Chair'], ['vira3', 'In', 'Shift to one leg, Warrior III'],
+      ['utkatasana', 'Ex', 'Back to Chair'], ['calfraise', 'In', 'Rise to the toes'], ['malasana', 'Ex', 'Squat, no block']]) } },
+  { id: 'neck', name: 'Neck flow', levels: {
+    B: L('6 seated moves', '5 rounds · slow · about 3 min', [
+      ['griva', 'In', 'Sit tall, head centre', 'neckcenter'], ['griva', 'Ex', 'Chin toward chest', 'neckdown'], ['griva', 'In', 'Lift to centre', 'neckcenter'],
+      ['griva', 'Ex', 'Right ear toward right shoulder', 'necktilt'], ['griva', 'In', 'Back to centre', 'neckcenter'], ['griva', 'Ex', 'Left ear toward left shoulder', 'necktilt']]),
+    I: L('6 tabletop moves', '5 rounds · about 4 min', [
+      ['cat', 'Ex', 'Round, chin to chest'], ['cow', 'In', 'Gaze forward, neck long'], ['threadneedle', 'Ex', 'Thread the right arm under'],
+      ['cow', 'In', 'Return to tabletop'], ['threadneedle', 'Ex', 'Thread the left arm under'], ['cow', 'In', 'Return to tabletop']]),
+    A: L('8 strength presses, seated', '3 rounds · about 4 min', [
+      ['neckpress', 'Ex', 'Press forehead into the hand'], ['griva', 'In', 'Release, head centre', 'neckcenter'], ['neckpress', 'Ex', 'Hand behind the head, press back'],
+      ['griva', 'In', 'Release', 'neckcenter'], ['neckpress', 'Ex', 'Hand at the right temple, press'], ['griva', 'In', 'Release', 'neckcenter'],
+      ['neckpress', 'Ex', 'Hand at the left temple, press'], ['griva', 'In', 'Release', 'neckcenter']]) } },
+  { id: 'fullbody', name: 'Full body flow', levels: {
+    B: L('8 moves, one breath each', '4 rounds · about 5 min', [
+      ['urdhvahasta', 'In', 'Arms up'], ['uttanasana', 'Ex', 'Fold'], ['ardhauttanasana', 'In', 'Lift halfway'], ['downdog', 'Ex', 'Step back to down dog'],
+      ['plank', 'In', 'Shift forward to plank'], ['ashtanga', 'Ex', 'Knees down, lower the chest'], ['bhujangasana', 'In', 'Cobra'], ['downdog', 'Ex', 'Press back']]),
+    I: L('8 moves with warriors', '6 rounds · alternate sides · about 7 min', [
+      ['urdhvahasta', 'In', 'Arms up'], ['uttanasana', 'Ex', 'Fold'], ['ardhauttanasana', 'In', 'Lift halfway'], ['chaturanga', 'Ex', 'Step back and lower'],
+      ['bhujangasana', 'In', 'Cobra'], ['downdog', 'Ex', 'Down dog'], ['vira1', 'In', 'Right foot forward, Warrior I'], ['vira2', 'Ex', 'Open to Warrior II']]),
+    A: L('8 moves with Warrior III', '6 rounds · alternate sides · about 8 min', [
+      ['utkatasana', 'In', 'Chair, arms up'], ['uttanasana', 'Ex', 'Fold'], ['ardhauttanasana', 'In', 'Lift halfway'], ['chaturanga', 'Ex', 'Float or step back, lower'],
+      ['bhujangasana', 'In', 'Lift the chest'], ['downdog', 'Ex', 'Down dog'], ['vira1', 'In', 'Right foot forward, Warrior I'], ['vira3', 'Ex', 'Hinge into Warrior III']]) } }
 ];
 
 export const MOTHER = [
