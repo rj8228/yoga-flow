@@ -348,9 +348,11 @@ function badges() {
 let CAMSTATE = {};
 async function startCam() {
   const v = document.getElementById('cam'); if (!v) return;
-  try { await CAM.start(v, S.ui.facing || 'user', !CAMSTATE.photo); document.getElementById('cam-msg').hidden = true; }
-  catch { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'The camera is not available here. Allow camera access in Settings, or use “Upload instead”.'; }
+  try { await CAM.start(v, S.ui.facing || 'user', !CAMSTATE.photo); camMsg(''); }
+  catch { camMsg('The camera is not available here. Allow camera access in Settings, or use “Upload instead”.'); }
 }
+// Shows or hides the message over the camera preview; does nothing if you already left the screen.
+function camMsg(text) { const m = document.getElementById('cam-msg'); if (!m) return; m.hidden = !text; m.textContent = text; }
 function cameraView([target = 'main', id], q) {
   const flowObj = target === 'flow' ? FLOWS.find((f) => f.id === id) : null;
   const a = flowObj ? $.asana(flowObj.levels.B.steps[0][0]) : $.asana(id);
@@ -358,7 +360,7 @@ function cameraView([target = 'main', id], q) {
   const ret = q.ret || `#/asana/${id}`; const photo = q.photo === '1';
   CAMSTATE = { target, id, ret, photo };
   const label = flowObj ? flowObj.name : target === 'main' ? (photo ? 'Pose photo' : 'Pose video') : target === 'prog' ? 'Monthly progress' : (SHOTS.find(([k]) => k === target.slice(5)) || [, 'Clip'])[1];
-  after = () => { if (CAM.supported()) startCam(); else { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'This browser cannot record inside the app. Use “Upload instead” to open the phone camera.'; } };
+  after = () => { if (CAM.supported()) startCam(); else camMsg('This browser cannot record inside the app. Use “Upload instead” to open the phone camera.'); };
   return `<div class="rec">
   <header class="row-between"><a class="icon-btn" href="${esc(ret)}" aria-label="Close camera">${ICON.close}</a><span class="center"><b>${esc(flowObj ? flowObj.name : a.sa)}</b><small>${esc(label)}</small></span><button class="link-d" data-act="camupload">Upload instead</button></header>
   <div class="frame cam-frame"><video id="cam" playsinline muted></video>
