@@ -5,6 +5,7 @@ import './feedback.js';
 import * as BK from './backup.js';
 import * as CAM from './camera.js';
 import { reminderSection, downloadReminderICS } from './reminders.js';
+import { makeBeforeAfter, offerVideo } from './compare.js';
 
 const S = $.st();
 const view = document.getElementById('view');
@@ -151,6 +152,7 @@ function asanaView([id]) {
       ${[['post', 'Instagram post'], ['client', 'Client plan'], ['class', 'Group class']].map(([k, l]) => `<button class="chip ${reuse[k] ? 'on' : ''}" data-act="reuse:${id}:${k}">${reuse[k] ? '✓ ' : ''}${l}</button>`).join('')}</div></section>
     <section class="stack"><div class="row-between"><h2>Monthly progress</h2><span class="small muted">${prog.length} video${prog.length === 1 ? '' : 's'}</span></div>
       ${prog.length >= 2 ? `<div class="grid2 compare"><div><small>${new Date(prog[0]).toLocaleDateString()}</small><span class="media vid" data-media="prog:${id}:${prog[0]}"></span></div><div><small>${new Date(prog.at(-1)).toLocaleDateString()}</small><span class="media vid" data-media="prog:${id}:${prog.at(-1)}"></span></div></div>` : '<p class="small muted">Film this pose once a month; with two videos you get a before/after side by side.</p>'}
+      ${prog.length >= 2 ? `<button class="btn" data-act="beforeafter:${id}">Make before/after video</button>` : ''}
       <button class="btn" data-act="progress:${id}">${ICON.cam}Record this month · +${$.PTS.progress} pts</button></section>
     <section class="stack"><h2>My notes</h2><textarea data-note="${id}:mine" rows="3" placeholder="Acupressure points, client cues, variations">${esc(notes.mine || '')}</textarea></section>
   </div>`;
@@ -350,9 +352,11 @@ function badges() {
 let CAMSTATE = {};
 async function startCam() {
   const v = document.getElementById('cam'); if (!v) return;
-  try { await CAM.start(v, S.ui.facing || 'user', !CAMSTATE.photo); document.getElementById('cam-msg').hidden = true; }
-  catch { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'The camera is not available here. Allow camera access in Settings, or use “Upload instead”.'; }
+  try { await CAM.start(v, S.ui.facing || 'user', !CAMSTATE.photo); camMsg(''); }
+  catch { camMsg('The camera is not available here. Allow camera access in Settings, or use “Upload instead”.'); }
 }
+// Shows or hides the message over the camera preview; does nothing if you already left the screen.
+function camMsg(text) { const m = document.getElementById('cam-msg'); if (!m) return; m.hidden = !text; m.textContent = text; }
 function cameraView([target = 'main', id], q) {
   const flowObj = target === 'flow' ? FLOWS.find((f) => f.id === id) : null;
   const a = flowObj ? $.asana(flowObj.levels.B.steps[0][0]) : $.asana(id);
@@ -360,7 +364,7 @@ function cameraView([target = 'main', id], q) {
   const ret = q.ret || `#/asana/${id}`; const photo = q.photo === '1';
   CAMSTATE = { target, id, ret, photo };
   const label = flowObj ? flowObj.name : target === 'main' ? (photo ? 'Pose photo' : 'Pose video') : target === 'prog' ? 'Monthly progress' : (SHOTS.find(([k]) => k === target.slice(5)) || [, 'Clip'])[1];
-  after = () => { if (CAM.supported()) startCam(); else { const m = document.getElementById('cam-msg'); m.hidden = false; m.textContent = 'This browser cannot record inside the app. Use “Upload instead” to open the phone camera.'; } };
+  after = () => { if (CAM.supported()) startCam(); else camMsg('This browser cannot record inside the app. Use “Upload instead” to open the phone camera.'); };
   return `<div class="rec">
   <header class="row-between"><a class="icon-btn" href="${esc(ret)}" aria-label="Close camera">${ICON.close}</a><span class="center"><b>${esc(flowObj ? flowObj.name : a.sa)}</b><small>${esc(label)}</small></span><button class="link-d" data-act="camupload">Upload instead</button></header>
   <div class="frame cam-frame"><video id="cam" playsinline muted></video>
@@ -456,6 +460,17 @@ const ACT = {
   async progress(id) {
     if (CAM.supported()) return openCamera('prog', id);
     const f = await pick('video/*'); if (f) { await SAVE.prog(id, f); render(); }
+  },
+  // No await before makeBeforeAfter: it must start inside the tap so iOS lets the clips play.
+  beforeafter(id) {
+    const prog = S.progress[id] || []; if (prog.length < 2) return; const a = $.asana(id);
+    const blob = (t) => $.getMedia(`prog:${id}:${t}`).then((m) => m?.blob);
+    const day = (t) => new Date(t).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    const btn = document.querySelector(`[data-act="beforeafter:${id}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Making your video…'; }
+    toast('Making your video…');
+    return makeBeforeAfter(blob(prog[0]), blob(prog.at(-1)), { firstLabel: day(prog[0]), lastLabel: day(prog.at(-1)), title: a ? `${a.sa} · ${a.en}` : '' })
+      .then((v) => offerVideo(new File([v], `${id}-before-after.${v.type.includes('mp4') ? 'mp4' : 'webm'}`, { type: v.type })), (err) => toast(err.message))
+      .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Make before/after video'; } });
   },
   async flowvid(fid) {
     if (CAM.supported()) return openCamera('flow', fid);

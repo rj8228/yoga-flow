@@ -1,21 +1,25 @@
 // In-app camera: live preview with the pose outline on top, 3-second countdown, record or snap.
 // Falls back to the phone's normal camera picker when the browser can't record here.
 let stream = null; let rec = null; let chunks = []; let started = 0; let tick = null; let countdown = null;
+let gen = 0; // bumps on every start/stop so a slow camera start can't outlive the screen
 
 export const supported = () => !!(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
 
 export async function start(videoEl, facing = 'user', withAudio = true) {
-  stop();
+  stop(); const my = ++gen;
   const video = { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } };
-  try { stream = await navigator.mediaDevices.getUserMedia({ video, audio: withAudio }); }
-  catch (e) { if (!withAudio) throw e; stream = await navigator.mediaDevices.getUserMedia({ video, audio: false }); }
+  let s;
+  try { s = await navigator.mediaDevices.getUserMedia({ video, audio: withAudio }); }
+  catch (e) { if (!withAudio) throw e; s = await navigator.mediaDevices.getUserMedia({ video, audio: false }); }
+  if (my !== gen || !videoEl.isConnected) { s.getTracks().forEach((t) => t.stop()); return; } // screen was left meanwhile
+  stream = s;
   videoEl.srcObject = stream; videoEl.muted = true; videoEl.playsInline = true;
   videoEl.classList.toggle('mirror', facing === 'user');
   await videoEl.play().catch(() => {});
 }
 
 export function stop() {
-  clearInterval(tick); clearInterval(countdown); tick = countdown = null;
+  gen++; clearInterval(tick); clearInterval(countdown); tick = countdown = null;
   if (rec && rec.state !== 'inactive') { try { rec.stop(); } catch { /* already stopped */ } }
   rec = null; chunks = [];
   stream?.getTracks().forEach((t) => t.stop()); stream = null;
