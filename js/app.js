@@ -4,6 +4,7 @@ import * as $ from './store.js';
 import './feedback.js';
 import * as BK from './backup.js';
 import * as CAM from './camera.js';
+import { makeBeforeAfter, offerVideo } from './compare.js';
 
 const S = $.st();
 const view = document.getElementById('view');
@@ -150,6 +151,7 @@ function asanaView([id]) {
       ${[['post', 'Instagram post'], ['client', 'Client plan'], ['class', 'Group class']].map(([k, l]) => `<button class="chip ${reuse[k] ? 'on' : ''}" data-act="reuse:${id}:${k}">${reuse[k] ? '✓ ' : ''}${l}</button>`).join('')}</div></section>
     <section class="stack"><div class="row-between"><h2>Monthly progress</h2><span class="small muted">${prog.length} video${prog.length === 1 ? '' : 's'}</span></div>
       ${prog.length >= 2 ? `<div class="grid2 compare"><div><small>${new Date(prog[0]).toLocaleDateString()}</small><span class="media vid" data-media="prog:${id}:${prog[0]}"></span></div><div><small>${new Date(prog.at(-1)).toLocaleDateString()}</small><span class="media vid" data-media="prog:${id}:${prog.at(-1)}"></span></div></div>` : '<p class="small muted">Film this pose once a month; with two videos you get a before/after side by side.</p>'}
+      ${prog.length >= 2 ? `<button class="btn" data-act="beforeafter:${id}">Make before/after video</button>` : ''}
       <button class="btn" data-act="progress:${id}">${ICON.cam}Record this month · +${$.PTS.progress} pts</button></section>
     <section class="stack"><h2>My notes</h2><textarea data-note="${id}:mine" rows="3" placeholder="Acupressure points, client cues, variations">${esc(notes.mine || '')}</textarea></section>
   </div>`;
@@ -456,6 +458,17 @@ const ACT = {
   async progress(id) {
     if (CAM.supported()) return openCamera('prog', id);
     const f = await pick('video/*'); if (f) { await SAVE.prog(id, f); render(); }
+  },
+  // No await before makeBeforeAfter: it must start inside the tap so iOS lets the clips play.
+  beforeafter(id) {
+    const prog = S.progress[id] || []; if (prog.length < 2) return; const a = $.asana(id);
+    const blob = (t) => $.getMedia(`prog:${id}:${t}`).then((m) => m?.blob);
+    const day = (t) => new Date(t).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    const btn = document.querySelector(`[data-act="beforeafter:${id}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Making your video…'; }
+    toast('Making your video…');
+    return makeBeforeAfter(blob(prog[0]), blob(prog.at(-1)), { firstLabel: day(prog[0]), lastLabel: day(prog.at(-1)), title: a ? `${a.sa} · ${a.en}` : '' })
+      .then((v) => offerVideo(new File([v], `${id}-before-after.${v.type.includes('mp4') ? 'mp4' : 'webm'}`, { type: v.type })), (err) => toast(err.message))
+      .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Make before/after video'; } });
   },
   async flowvid(fid) {
     if (CAM.supported()) return openCamera('flow', fid);
